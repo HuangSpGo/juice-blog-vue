@@ -3,7 +3,6 @@
     <el-aside class="j-main-side" >
       <article-tree></article-tree>
     </el-aside>
-
     <el-container style="height: 100%">
       <article-main></article-main>
     </el-container>
@@ -11,8 +10,8 @@
 </template>
 
 <script>
-    import ArticleTree from "../../blog/ArticleTree/ArticleTree";
-    import ArticleMain from "../../blog/ArticleMain/ArticleMain";
+    import ArticleTree from "../../../components/blog/ArticleTree/ArticleTree";
+    import ArticleMain from "../../../components/blog/ArticleMain/ArticleMain";
     export default {
         name: "JMain",
         components: {ArticleMain, ArticleTree},
@@ -23,6 +22,8 @@
         },
         methods:{
 
+        },
+        mounted(){
         }
     }
 </script>

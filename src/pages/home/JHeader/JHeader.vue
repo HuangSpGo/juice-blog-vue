@@ -8,8 +8,8 @@
       <li class="j-li">
         <j-search></j-search>
       </li>
-      <li v-for="item in liList" class="j-li">
-        <a href="javascipt:void(0);" :class="{active : activeName == item.name}" @click="handlerClick(item)">{{item.name}}</a>
+      <li v-for="(item,index) in routes"  class="j-li">
+        <a href="javascipt:void(0);" :class="{active : activeName == item.name }" :key="index" @click="handlerClick(item)">{{item.title}}</a>
       </li>
     </ul>
   </div>
@@ -22,34 +22,16 @@
         components: {JSearch},
         data:function () {
             return {
-                liList:[
-                    {
-                        name : "首页",
-                        url : "Home"
-                    },
-                    {
-                        name : "Java",
-                        url : "Java"
-                    },
-                    {
-                        name : "前端",
-                        url : "前端"
-                    },
-                    {
-                        name : "关于",
-                        url : "关于"
-                    }
-                ],
-                activeName:""
+                routes : this.$router.options.routes[0].children,
+                activeName : this.$router.options.routes[0].children[0].name
             }
         },
         computed:{
         },
         methods:{
           handlerClick(item){
-            let name = item.name;
-            let url = item.url;
-            this.activeName = name;
+            this.$router.push({name : item.name});
+            this.activeName = item.name;
           }
         }
     }

@@ -1,6 +1,6 @@
 <template>
   <ul class="j-article-list-ul">
-    <li v-for="article in articleList" :key="article.id" class="j-article-list-li">
+    <li v-for="(article,index) in articleList" :key="index" class="j-article-list-li">
       <div class="j-article-list-single">
           <!--评论区-->
           <div class="j-article-list-communication">

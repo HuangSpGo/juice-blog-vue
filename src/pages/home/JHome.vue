@@ -4,11 +4,8 @@
         <j-header></j-header>
       </el-header>
       <el-main class="main">
-        <j-main></j-main>
+        <router-view></router-view>
       </el-main>
-    <!--  <el-footer style="height:40px;box-shadow: 0 1px 2px 0 rgba(0,0,0,.2);">
-        {{date}}
-      </el-footer>-->
     </el-container>
 </template>
 
@@ -22,6 +19,9 @@
             return {
                  date : new Date()
             }
+        },
+        mounted(){
+          console.log("JHome  ",this.$route.params)
         }
     }
 </script>
