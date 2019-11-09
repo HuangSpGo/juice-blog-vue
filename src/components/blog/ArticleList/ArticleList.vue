@@ -148,11 +148,18 @@
                 ]
             }
         },
+        props : {
+            articleType: {
+                type : String,
+                default:""
+            }
+        },
         methods : {
             handlerStar(article){
               alert(JSON.stringify(article))
             }
-        }
+        },
+
     }
 </script>
 
