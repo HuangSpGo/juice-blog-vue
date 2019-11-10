@@ -21,9 +21,10 @@ export default new Router({
       path: '/',
       name: 'JHome',
       component : JHome,
+      redirect : "/main",
       children : [
         {
-          path : "/",
+          path : "/main",
           name : "JMain",
           title : "首页",
           component : JMain

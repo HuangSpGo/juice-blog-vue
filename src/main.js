@@ -6,9 +6,14 @@ import router from './router'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 
+//引入mavon-editor  markdown编辑器
+import mavonEdit from 'mavon-editor'
+import 'mavon-editor/dist/css/index.css'
+
 Vue.config.productionTip = false
 
-Vue.use(ElementUI)
+Vue.use(ElementUI);
+Vue.use(mavonEdit);
 
 /* eslint-disable no-new */
 new Vue({
