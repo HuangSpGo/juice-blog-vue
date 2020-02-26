@@ -1,11 +1,14 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import store from '../store/index'
 
 import JHome from '../pages/home/JHome'
 import JMain from '../pages/home/JMain/JMain'
 import About from '../pages/about/index'
+import Article from '../pages/article/index'
 import Java from '../pages/java/index'
 import Web from '../pages/web/index'
+import {userApi} from '../api/UserApi'
 
 Vue.use(Router)
 
@@ -14,8 +17,7 @@ Router.prototype.push = function push(location) {
   return originalPush.call(this, location).catch(err => err);
 }
 
-
-export default new Router({
+const router = new Router({
   routes: [
     {
       path: '/',
@@ -29,7 +31,7 @@ export default new Router({
           title : "首页",
           component : JMain
         },
-        {
+        /*{
           path : "/java",
           name : "java",
           title : "Java",
@@ -40,14 +42,23 @@ export default new Router({
           name : "web",
           title : "前端",
           component : Web
-        },
+        },*/
         {
           path : "/about",
           name : "about",
-          title : "About",
+          title : "关于",
           component : About
+        },
+        {
+          path : "/post/:id",
+          name : "post",
+          component : Article
         }
       ]
     }
   ]
 })
+
+
+
+export default router

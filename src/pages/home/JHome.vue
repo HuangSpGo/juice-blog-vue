@@ -1,12 +1,13 @@
 <template>
-    <el-container class="home">
-      <el-header height="120px" class="header">
+  <el-container class="home">
+      <el-header height="50px" class="header">
         <j-header></j-header>
       </el-header>
       <el-main class="main">
         <router-view></router-view>
       </el-main>
-    </el-container>
+      <el-backtop target=".main"></el-backtop>
+  </el-container>
 </template>
 
 <script>
@@ -21,7 +22,6 @@
             }
         },
         mounted(){
-          console.log("JHome  ",this.$route.params)
         }
     }
 </script>
