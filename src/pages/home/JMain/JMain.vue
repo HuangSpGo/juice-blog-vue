@@ -14,7 +14,7 @@
         </el-col>
       </el-row>
       <el-divider></el-divider>
-      <j-reply></j-reply>
+      <j-reply :article-id="homePage"></j-reply>
       <!--<j-gitalk pageId="homePage"></j-gitalk>-->
     </el-container>
   </el-container>
@@ -32,6 +32,7 @@
         components: {ArticleTree,JReply,JGitalk},
         data(){
             return {
+              homePage : "homePage",
               articleMap : [],
               articleTypeList : []
             }
@@ -67,8 +68,6 @@
         },
         mounted(){
           this.initData();
-        },
-        created(){
         }
     }
 </script>

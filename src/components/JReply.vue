@@ -7,7 +7,7 @@
             </div>
             <div class="root-reply box-reply">
               <el-avatar
-                src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"
+                :src="avatar"
                 shape="square"
                 fit="fill"
                 class="el-dropdown-link avatar"
@@ -77,7 +77,21 @@
                       <span >{{secondReply['replyContent']}}</span>
                     </div>
                     <div class="reply-button">
-                      <el-button class="reply-button" size="mini" type="primary" @click="handleReply">回复</el-button>
+                      <el-button class="reply-button" size="mini" type="primary" @click="handleReply(secondReply)">回复</el-button>
+                    </div>
+                    <div v-if="replyUserForm.replyId == secondReply['id']">
+                      <el-form ref="articleForm">
+                        <mavon-editor
+                          style="height: 100px;min-height: 100px;"
+                          :subfield="false"
+                          :toolbarsFlag="false"
+                          :shortCut="false"
+                          placeholder="欢迎留言......"
+                          v-model="replyUserForm.replyContent"
+                          ref="replyMd"
+                        >
+                        </mavon-editor>
+                      </el-form>
                     </div>
                   </div>
                 </el-row>
@@ -99,16 +113,18 @@
         },
         data:function () {
           return {
+            avatar: this.$store.getters.getUserAvatar,
             replyArticleForm : {
               fromUser : "",
               fromUserAvatar : this.$store.getters.getUserAvatar,
-              articleId : "",
+              articleId : this.articleId,
               replyContent : "",
             },
             replyUserForm : {
+              replyId : "",
               fromUser : "",
               fromUserAvatar : this.$store.getters.getUserAvatar,
-              articleId : "",
+              articleId : this.articleId,
               toUser : "",
               replyContent : "",
             },
@@ -174,6 +190,13 @@
             ]
           }
         },
+        created() {
+          if(this.articleId){
+            replyApi.loadByArticleId(this.articleId).then(res => {
+              this.firstReplyList = res.data;
+            })
+          }
+        },
         methods : {
           /**
            * 回复文章
@@ -187,15 +210,20 @@
               this.$message.warning("请输入回复内容！")
               return;
             }
+            const param = JSON.stringify(this.replyArticleForm);
+            replyApi.save(param).then(res => {
+              this.$msgbox("评论成功");
+            })
           },
           /**
            * 回复评论
            */
           handleReply(oldReply){
-
-            replyApi.save().then(res => {
-
-            })
+            console.log(oldReply);
+            this.replyUserForm.replyId = oldReply.id;
+            // replyApi.save().then(res => {
+            //
+            // })
           },
           handlePreview(){
 

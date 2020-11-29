@@ -6,6 +6,7 @@ import JHome from '../pages/home/JHome'
 import JMain from '../pages/home/JMain/JMain'
 import About from '../pages/about/index'
 import Article from '../pages/article/index'
+import LoginCallback from '../pages/loginCallback/index'
 import Java from '../pages/java/index'
 import Web from '../pages/web/index'
 import {userApi} from '../api/UserApi'
@@ -18,6 +19,7 @@ Router.prototype.push = function push(location) {
 }
 
 const router = new Router({
+  mode: "history",
   routes: [
     {
       path: '/',
@@ -55,6 +57,10 @@ const router = new Router({
           component : Article
         }
       ]
+    },
+    {
+      path: "/loginCallback",
+      component: LoginCallback
     }
   ]
 })

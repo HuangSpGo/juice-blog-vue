@@ -10,6 +10,12 @@ const state = {
 }
 
 const getters = {
+  getToken :(state) => {
+    if(!state.token){
+      state.token = sessionStorage.getItem('token');
+    }
+    return state.token;
+  },
   getUser :(state) => {
     if(!state.userInfo){
       state.userInfo = JSON.parse(sessionStorage.getItem('userInfo'))
@@ -30,13 +36,21 @@ const getters = {
 }
 
 const mutations = {
+  setToken : (state,token) => {
+    sessionStorage.setItem("token",token);
+    state.token = token
+  },
   setUser : (state,userInfo) => {
     sessionStorage.setItem("userInfo",JSON.stringify(userInfo));
     state.userInfo = userInfo
   }
+
 }
 
 const actions = {
+  setToken (context,token) {
+    context.commit('setToken',token)
+  },
   setUser (context,userInfo) {
     context.commit('setUser',userInfo)
   }

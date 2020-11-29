@@ -27,8 +27,10 @@ Vue.use(mavonEdit);
 
 
 router.beforeEach((to, from, next) => {
-  if(!store.getters.getUser){
-    userApi.getUserInfo().then(res => {
+  const userInfo = store.getters.getUser;
+  const token = store.getters.getToken;
+  if(!userInfo && token){
+    userApi.getUserInfo(token).then(res => {
       if(res.data){
         store.dispatch("setUser",res.data)
       }
