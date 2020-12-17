@@ -9,6 +9,10 @@ import Manage from '../pages/manage/index'
 import Article from '../pages/article/index'
 import ArticleManage from "../pages/manage/articleList/index";
 import UserManage from '../pages/manage/userList/index'
+import LoginCallback from '../pages/loginCallback/index'
+import Java from '../pages/java/index'
+import Web from '../pages/web/index'
+import {userApi} from '../api/UserApi'
 
 Vue.use(Router)
 
@@ -18,6 +22,7 @@ Router.prototype.push = function push(location) {
 }
 
 const router = new Router({
+  mode: "history",
   routes: [
     {
       path: '/',
@@ -67,6 +72,10 @@ const router = new Router({
           component : Article
         }
       ]
+    },
+    {
+      path: "/loginCallback",
+      component: LoginCallback
     }
   ]
 })

@@ -1,18 +1,17 @@
-import axios from 'axios'
+import {baseApiUrl,$ajax} from './BaseApi';
 
-const baseUrl = window.baseParam.baseApiUrl + "/articleType";
+const baseUrl = baseApiUrl + "/articleType";
 const articleTypeApi = {
-
   /**
    * 获取所有文章类型
    */
   findAll(){
     let url = baseUrl + "/findAll";
-    return axios.get(url,{});
+    return $ajax.get(url,{});
   },
   save(param){
     let url = baseUrl + "/save";
-    return axios.post(url,param,{})
+    return $ajax.post(url,param,{})
   }
 }
 

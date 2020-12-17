@@ -1,15 +1,11 @@
-import axios from 'axios'
-axios.defaults.withCredentials = true;// 允许跨域携带cookie
+import {baseApiUrl,$ajax} from './BaseApi';
 
-const baseUrl = window.baseParam.baseApiUrl ;
+const baseUrl = baseApiUrl + "user";
 const userApi = {
   getUserInfo(){
-    let url = baseUrl + "/login/getUserInfo";
-    return axios.get(url,{});
-  },
-  getAuthUrl(){
-    let url = baseUrl + "/oauth/getAuthUrl";
-    return axios.get(url,{});
+    let url = baseUrl + "/getUserInfo";
+    return $ajax.get(url,{
+    });
   }
 }
 export {userApi}

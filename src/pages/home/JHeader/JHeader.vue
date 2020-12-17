@@ -14,6 +14,9 @@
           </el-avatar>
           <el-dropdown-menu v-if="$store.getters.isLogin" slot="dropdown">
             <el-dropdown-item >{{user['userName']}}</el-dropdown-item>
+            <el-dropdown-item >
+              <span><el-button type="text" style="width: 100%" @click="handleLogout">退出</el-button></span>
+            </el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
       </a>
@@ -53,7 +56,8 @@
 
 <script>
     import JSearch from "../../../components/JSearch";
-    import JDrawer from "../JDrawer/index"
+    import JDrawer from "../JDrawer/index";
+    import store from "../../../store";
 
 
     export default {
@@ -99,9 +103,16 @@
               spinner: 'el-icon-loading',
               background: 'rgba(0, 0, 0, 0.7)'
             });
-            let url = "https://github.com/login/oauth/authorize?client_id=db812924f5cde0abec31&redirect_uri=http://localhost:8099/blog/oauth/github/callback"
+            let url = "https://github.com/login/oauth/authorize?client_id=db812924f5cde0abec31"
             window.location = url;
           },
+          handleLogout(){
+            this.$confirm("是否确定退出？").then(() =>{
+              this.$store.commit('removeToken');
+              this.$store.commit('removeUser');
+              this.$router.go(0);
+            })
+          }
         },
         created() {
           //获取路由中的第一层

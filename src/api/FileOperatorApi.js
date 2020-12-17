@@ -1,6 +1,6 @@
-import axios from 'axios'
+import {baseApiUrl,$ajax} from './BaseApi';
 
-const baseUrl = window.baseParam.baseApiUrl + "/file";
+const baseUrl = baseApiUrl + "/file";
 const fileApi = {
 
   /**

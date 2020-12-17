@@ -1,18 +1,26 @@
 import Vuex from "vuex";
 import Vue from "vue";
+import Cookie from 'js-cookie';
 
 
 Vue.use(Vuex);
 
 const state = {
   activePath:"",
-  userInfo:null
+  userInfo:null,
+  token:null
 }
 
 const getters = {
+  getToken :(state) => {
+    if(!state.token){
+      state.token = Cookie.get("token");
+    }
+    return state.token;
+  },
   getUser :(state) => {
     if(!state.userInfo){
-      state.userInfo = JSON.parse(sessionStorage.getItem('userInfo'))
+      state.userInfo = Cookie.get("userInfo") ? JSON.parse(Cookie.get("userInfo")) : null;
     }
     return state.userInfo;
   },
@@ -30,13 +38,29 @@ const getters = {
 }
 
 const mutations = {
+  setToken : (state,token) => {
+    Cookie.set("token",token);
+    state.token = token
+  },
+  removeToken : (state) => {
+    Cookie.remove("token");
+    state.token = "";
+  },
   setUser : (state,userInfo) => {
-    sessionStorage.setItem("userInfo",JSON.stringify(userInfo));
+    Cookie.set("userInfo",userInfo);
     state.userInfo = userInfo
+  },
+  removeUser : (state) => {
+    Cookie.remove("userInfo");
+    state.userInfo = "";
   }
+
 }
 
 const actions = {
+  setToken (context,token) {
+    context.commit('setToken',token)
+  },
   setUser (context,userInfo) {
     context.commit('setUser',userInfo)
   }

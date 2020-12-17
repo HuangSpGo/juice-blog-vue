@@ -1,18 +1,18 @@
-import axios from 'axios'
+import {baseApiUrl,$ajax} from './BaseApi';
 
-const baseUrl = window.baseParam.baseApiUrl + "/article";
+const baseUrl = baseApiUrl + "/article";
 const articleApi = {
   save(param){
     let url = baseUrl + "/save";
-    return axios.post(url,param,{})
+    return $ajax.post(url,param,{})
   },
   findAllArticleGroupByType(){
     let url = baseUrl + "/findAllArticleGroupByType";
-    return axios.get(url,{});
+    return $ajax.get(url,{});
   },
   loadById(id){
     let url = baseUrl + "/loadById/"+id;
-    return axios.get(url,{});
+    return $ajax.get(url,{});
   }
 }
 export {

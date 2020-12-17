@@ -14,7 +14,7 @@
         </el-col>
       </el-row>
       <el-divider></el-divider>
-      <j-reply articleId="homePage"></j-reply>
+      <j-reply :article-id="homePage"></j-reply>
     </el-container>
   </el-container>
 </template>
@@ -31,6 +31,7 @@
         components: {ArticleTree,JReply,JGitalk},
         data(){
             return {
+              homePage : "homePage",
               articleMap : [],
               articleTypeList : []
             }
@@ -42,13 +43,13 @@
           },
           findAllType(){
             articleTypeApi.findAll().then(res => {
-              this.articleTypeList = res.data;
+              this.articleTypeList = res.data['typeList'];
               this.findArticleList();
             })
           },
           findArticleList(){
             articleApi.findAllArticleGroupByType().then(res => {
-              this.articleMap = res.data;
+              this.articleMap = res.data['articleMap'];
             });
           },
           getArticleType(typeId){
@@ -66,8 +67,6 @@
         },
         mounted(){
           this.initData();
-        },
-        created(){
         }
     }
 </script>
