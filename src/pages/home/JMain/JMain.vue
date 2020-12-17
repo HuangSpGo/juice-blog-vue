@@ -14,8 +14,7 @@
         </el-col>
       </el-row>
       <el-divider></el-divider>
-      <j-reply></j-reply>
-      <!--<j-gitalk pageId="homePage"></j-gitalk>-->
+      <j-reply articleId="homePage"></j-reply>
     </el-container>
   </el-container>
 </template>

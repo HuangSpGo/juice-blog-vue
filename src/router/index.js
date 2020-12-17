@@ -5,10 +5,10 @@ import store from '../store/index'
 import JHome from '../pages/home/JHome'
 import JMain from '../pages/home/JMain/JMain'
 import About from '../pages/about/index'
+import Manage from '../pages/manage/index'
 import Article from '../pages/article/index'
-import Java from '../pages/java/index'
-import Web from '../pages/web/index'
-import {userApi} from '../api/UserApi'
+import ArticleManage from "../pages/manage/articleList/index";
+import UserManage from '../pages/manage/userList/index'
 
 Vue.use(Router)
 
@@ -31,18 +31,30 @@ const router = new Router({
           title : "首页",
           component : JMain
         },
-        /*{
-          path : "/java",
-          name : "java",
-          title : "Java",
-          component : Java
-        },
         {
-          path : "/web",
-          name : "web",
-          title : "前端",
-          component : Web
-        },*/
+          path : "manage",
+          name : "Manage",
+          meta : "管理",
+          title : "管理",
+          component : Manage,
+          isAdmin : store.getters.isAdmin,
+          children : [
+            {
+              path : "articleManage",
+              name : "ArticleManage",
+              meta : "文章列表",
+              title : "文章列表",
+              component : ArticleManage,
+            },
+            {
+              path : "userManage",
+              name : "UserManage",
+              title : "用户列表",
+              meta : "用户列表",
+              component : UserManage,
+            }
+          ]
+        },
         {
           path : "/about",
           name : "about",

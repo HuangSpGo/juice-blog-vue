@@ -1,0 +1,21 @@
+.home{
+  min-height: calc(90vh);
+  height: calc(90vh);
+}
+
+.header{
+  padding: 0 10%;
+  position: relative;
+  box-shadow: 0 1px 2px 0 rgba(0,0,0,.2);
+  z-index: 100;
+}
+
+.main{
+  /*height: 830px;*/
+  padding: 5px 50px 5px 50px;
+  background-color: #f6cdff24;
+}
+
+.el-submenu{
+  text-align: left;
+}

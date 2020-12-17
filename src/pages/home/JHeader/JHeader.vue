@@ -1,7 +1,7 @@
 <template>
   <div class="j-header">
     <h1 class="j-title">
-      <a href="javascript:(0);"  @click="openLoginDialog">
+      <a href="javascript:(0);"  @click="openLogin">
         <el-dropdown size="medium" >
           <el-avatar
             :src="$store.getters.getUserAvatar"
@@ -24,16 +24,22 @@
         <j-search></j-search>
       </li>-->
       <li v-for="(item,index) in routes"  class="j-li">
-        <a href="javascript:void(0);" :class="{active : $store.state.activePath == item.path }" :key="index" @click="handleClick(item)">{{item.title}}</a>
+        <a href="javascript:void(0);"
+           v-if="!item['isAdmin']"
+           :class="{active : $store.state.activePath == item.path }"
+           :key="index" @click="handleClick(item)">
+          {{item.title}}
+        </a>
       </li>
       <li class="j-li" v-if="$store.getters.isAdmin" >
         <el-button type="primary" @click="handleOpenDrawer" icon="el-icon-edit" style="margin:4px;"></el-button>
       </li>
     </ul>
     <j-drawer ref="drawer"></j-drawer>
-    <el-dialog
+    <!--<el-dialog
       :visible.sync="loginDialogVisible"
-      :modal="false"
+      :modal=true
+      :append-to-body=true
       width="300px"
     >
       <span>当前仅支持Github登录，是否授权登录？</span>
@@ -41,7 +47,7 @@
         <el-button @click="loginDialogVisible = false">取 消</el-button>
         <el-button type="primary" @click="handleLogin">确 定</el-button>
       </span>
-    </el-dialog>
+    </el-dialog>-->
   </div>
 </template>
 
@@ -53,6 +59,7 @@
     export default {
         name: "JHeader",
         components: {JSearch,JDrawer},
+        inject : ['openLoginDialog'],
         data:function () {
           return {
             routes: this.$router.options.routes[0].children,
@@ -76,10 +83,11 @@
           handleOpenDrawer(){
             this.$refs.drawer.handleShowDrawer();
           },
-          openLoginDialog(){
-            if(!this.$store.getters.isLogin){
+          openLogin(){
+            /*if(!this.$store.getters.isLogin){
               this.loginDialogVisible = true;
-            }
+            }*/
+            this.openLoginDialog()
           },
           /**
            * 登录

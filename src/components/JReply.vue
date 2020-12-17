@@ -7,7 +7,7 @@
             </div>
             <div class="root-reply box-reply">
               <el-avatar
-                src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"
+                :src="this.$store.getters.getUserAvatar"
                 shape="square"
                 fit="fill"
                 class="el-dropdown-link avatar"
@@ -15,7 +15,6 @@
               </el-avatar>
               <div class="edit-mode">
                 <div>
-                  <!--<el-input resize="none" type="textarea" :rows="4"></el-input>-->
                   <el-form ref="articleForm">
                       <mavon-editor
                       style="height: 100px;min-height: 100px;"
@@ -30,13 +29,13 @@
                   </el-form>
                 </div>
                 <div>
-                  <el-button class="reply-button" type="primary" @click="handleReplyArticle">回复</el-button>
-                  <el-button class="reply-button" type="primary" @click="handlePreview">预览</el-button>
+                  <el-button class="reply-button" type="primary" size="mini" @click="handleReplyArticle">回复</el-button>
+                  <el-button class="reply-button" type="primary" size="mini" @click="handlePreview">预览</el-button>
                 </div>
               </div>
             </div>
-            <div class="root-reply box-reply replyList">
-              <el-row v-for="firstReply in firstReplyList" :key="firstReply.id">
+            <div v-if="firstReplyList.length > 0" class="root-reply box-reply replyList">
+              <el-row v-for="(firstReply,index) in firstReplyList" :key="firstReply.id">
                 <el-row>
                   <el-avatar
                     :src="firstReply['fromUserAvatar']"
@@ -47,14 +46,40 @@
                   </el-avatar>
                   <div class="detail-mode">
                     <div>
-                      <span style="color: inherit;font-weight: 900;">{{firstReply['fromUser']}}</span>
+                      <span style="color: inherit;font-weight: 900;">{{firstReply['fromUserName']}}</span>
                       <span style="margin-left:20px;font-size:small;opacity:0.9;">{{firstReply['replyTime']}}</span>
                     </div>
                     <div>
                       <span>{{firstReply['replyContent']}}</span>
                     </div>
-                    <div class="reply-button">
-                      <el-button class="reply-button" size="mini" type="primary" @click="handleReply">回复</el-button>
+                    <div v-if="showReplyId != firstReply.id " class="reply-button">
+                      <i v-if="isReplySelf(firstReply.fromUserId)"
+                         @click="showReplyInput(firstReply)"
+                         style="cursor:pointer;"
+                         title="回复"
+                         class="el-icon-chat-dot-square"></i>
+                     <!-- <el-button v-if="isReplySelf(firstReply.fromUserId)" class="reply-button" size="mini" type="primary" @click="showReplyInput(firstReply)">回复</el-button>-->
+                    </div>
+                    <div v-else class="edit-mode replyUser">
+                      <div>
+                        <!--<el-input resize="none" type="textarea" :rows="4"></el-input>-->
+                        <el-form ref="articleForm">
+                          <mavon-editor
+                            style="height: 100px;min-height: 100px;"
+                            :subfield="false"
+                            :toolbarsFlag="false"
+                            :shortCut="false"
+                            :placeholder="showReplyPlaceholder"
+                            v-model="replyUserForm.replyContent"
+                            ref="replyMd"
+                          >
+                          </mavon-editor>
+                        </el-form>
+                      </div>
+                      <div>
+                        <el-button class="reply-button" size="mini" type="primary" @click="handleReplyUser(firstReply)">确定</el-button>
+                        <el-button class="reply-button" size="mini" type="primary" @click="hideReplyInput">取消</el-button>
+                      </div>
                     </div>
                   </div>
                 </el-row>
@@ -68,20 +93,46 @@
                   </el-avatar>
                   <div class="detail-mode" style="width: 83%;">
                     <div>
-                      <span style="color: inherit;font-weight: 900;">{{secondReply['fromUser']}}</span>
+                      <span style="color: inherit;font-weight: 900;">{{secondReply['fromUserName']}}</span>
                       <i class="el-icon-caret-right" style="margin:0px 10px"></i>
-                      <span style="color: inherit;font-weight: 900;">{{secondReply['toUser']}}</span>
+                      <span style="color: inherit;font-weight: 900;">{{secondReply['toUserName']}}</span>
                       <span style="margin-left:20px;font-size:small;opacity:0.9;">{{secondReply['replyTime']}}</span>
                     </div>
                     <div>
                       <span >{{secondReply['replyContent']}}</span>
                     </div>
-                    <div class="reply-button">
-                      <el-button class="reply-button" size="mini" type="primary" @click="handleReply">回复</el-button>
+                    <div v-if="showReplyId != secondReply.id " class="reply-button">
+                      <i v-if="isReplySelf(secondReply.fromUserId)"
+                         @click="showReplyInput(secondReply)"
+                         style="cursor:pointer;"
+                         title="回复"
+                         class="el-icon-chat-dot-square"></i>
+                      <!--<el-button v-if="isReplySelf(secondReply.fromUserId)" class="reply-button" size="mini" type="primary" @click="showReplyInput(secondReply)">回复</el-button>-->
+                    </div>
+                    <div v-else class="edit-mode replyUser">
+                      <div>
+                        <!--<el-input resize="none" type="textarea" :rows="4"></el-input>-->
+                        <el-form ref="articleForm">
+                          <mavon-editor
+                            style="height: 100px;min-height: 100px;"
+                            :subfield="false"
+                            :toolbarsFlag="false"
+                            :shortCut="false"
+                            :placeholder="showReplyPlaceholder"
+                            v-model="replyUserForm.replyContent"
+                            ref="replyMd"
+                          >
+                          </mavon-editor>
+                        </el-form>
+                      </div>
+                      <div>
+                        <el-button class="reply-button" size="mini" type="primary" @click="handleReplyUser(secondReply)">确定</el-button>
+                        <el-button class="reply-button" size="mini" type="primary" @click="hideReplyInput">取消</el-button>
+                      </div>
                     </div>
                   </div>
                 </el-row>
-                <el-divider></el-divider>
+                <el-divider v-if="!(index == firstReplyList.length - 1)"></el-divider>
               </el-row>
             </div>
           </el-card>
@@ -97,110 +148,156 @@
         props:{
           articleId : ""
         },
+        inject : ['openLoginDialog'],
         data:function () {
           return {
             replyArticleForm : {
-              fromUser : "",
+              fromUserId :  "",
+              fromUserName : "",
               fromUserAvatar : this.$store.getters.getUserAvatar,
               articleId : "",
               replyContent : "",
+              replyTarget : 1,
             },
             replyUserForm : {
-              fromUser : "",
+              fromUserId :  "",
+              fromUserName : "",
               fromUserAvatar : this.$store.getters.getUserAvatar,
               articleId : "",
-              toUser : "",
+              toUserId : "",
+              toUserName : "",
+              toUserAvatar : "",
               replyContent : "",
+              toFirstReplyId : "",
+              replyTarget : 2,
             },
-            firstReplyList : [
-              {
-                id : "1",
-                fromUser : "Juice",//评论者
-                fromUserAvatar : "https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png",
-                toUser : "",//被评论者
-                replyTime : "5分钟前",//评论时间
-                articleId : "",//回复的文章id
-                replyContent : "写得真棒哈哈哈哈哈",//回复内容
-                secondReplyList : [
-                  {
-                    id : "2",
-                    fromUser : "Coco",//评论者
-                    fromUserAvatar : "https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png",
-                    toUser : "Juice",//被评论者
-                    replyTime : "4分钟前",//评论时间
-                    articleId : "",//回复的文章id
-                    replyContent : "谢谢！！！！",//回复内容
-                  },
-                  {
-                    id : "3",
-                    fromUser : "Juice",//评论者
-                    fromUserAvatar : "https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png",
-                    toUser : "Coco",//被评论者
-                    replyTime : "3分钟前",//评论时间
-                    articleId : "",//回复的文章id
-                    replyContent : "不用客气",//回复内容
-                  }
-                ]
-              },
-              {
-                id : "4",
-                fromUser : "Juice",//评论者
-                fromUserAvatar : "https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png",
-                toUser : "",//被评论者
-                replyTime : "5分钟前",//评论时间
-                articleId : "",//回复的文章id
-                replyContent : "写得真棒哈哈哈哈哈",//回复内容
-                secondReplyList : [
-                  {
-                    id : "5",
-                    fromUser : "Coco",//评论者
-                    fromUserAvatar : "https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png",
-                    toUser : "Juice",//被评论者
-                    replyTime : "4分钟前",//评论时间
-                    articleId : "",//回复的文章id
-                    replyContent : "谢谢！！！！",//回复内容
-                  },
-                  {
-                    id : "6",
-                    fromUser : "Juice",//评论者
-                    fromUserAvatar : "https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png",
-                    toUser : "Coco",//被评论者
-                    replyTime : "3分钟前",//评论时间
-                    articleId : "",//回复的文章id
-                    replyContent : "不用客气",//回复内容
-                  }
-                ]
-              }
-            ]
+            showReplyId : "",
+            showReplyPlaceholder : "",
+            firstReplyList : []
           }
         },
+
         methods : {
+          isReplySelf(fromUserId) {
+            if(!this.$store.getters.isLogin){
+              return true;
+            }
+            let userId = this.$store.getters.getUser['id'];
+            if (userId != fromUserId) {
+              return true;
+            } else {
+              return false;
+            }
+          },
+          beforeReplyCheck(newReply){
+            if(!this.$store.getters.isLogin){
+              this.openLoginDialog();
+              return true;
+            }
+            if(!newReply.replyContent){
+              this.$message.warning("请输入回复内容！")
+              return true;
+            }
+          },
           /**
            * 回复文章
            */
           handleReplyArticle(){
-            if(!this.$store.getters.isLogin){
-              this.$message.warning("请先登录！")
-              return;
+            let newReply = this.replyArticleForm;
+            if(this.beforeReplyCheck(newReply)){
+              return false;
             }
-            if(!this.replyArticleForm.replyContent){
-              this.$message.warning("请输入回复内容！")
-              return;
-            }
+            newReply.articleId = this.articleId;
+            this.handleReply(newReply);
           },
           /**
            * 回复评论
            */
-          handleReply(oldReply){
-
-            replyApi.save().then(res => {
-
+          handleReplyUser(oldReply){
+            let newReply = this.replyUserForm;
+            if(this.beforeReplyCheck(newReply)){
+              return false;
+            }
+            let currentUserId = this.$store.getters.getUser['id'];
+            if(currentUserId == oldReply.fromUserId){
+              this.$message.error("无法回复自己！")
+              return;
+            }
+            newReply.toUserId = oldReply.fromUserId;
+            newReply.toUserName = oldReply.fromUserName;
+            newReply.toUserAvatar = oldReply.fromUserAvatar;
+            newReply.fromUserName = this.$store.getters.getUser['userName'];
+            newReply.articleId = this.articleId;
+            if(oldReply['replyTarget'] == 1){
+              newReply.toFirstReplyId = oldReply.id;
+            }else{
+              newReply.toFirstReplyId = oldReply.toFirstReplyId;
+            }
+            this.handleReply(newReply);
+          },
+          handleReply(newReply){
+            let the = this;
+            newReply.fromUserName = this.$store.getters.getUser['userName'];
+            newReply.fromUserId = this.$store.getters.getUser['id'];
+            newReply.fromUserAvatar = this.$store.getters.getUser['avatarUrl'];
+            replyApi.save(newReply).then(res => {
+              let newReply = res.data;
+              if(newReply['replyTarget'] == 1){
+                the.initReplyArticleForm();
+              }else{
+                the.initReplyUserForm();
+              }
+              the.hideReplyInput();
+              the.appendReplyList(newReply);
+              this.$message.success("回复成功！")
             })
           },
           handlePreview(){
 
           },
-
+          /**
+           * 显示回复输入框
+           */
+          showReplyInput(reply){
+            this.showReplyId = reply.id;
+            this.showReplyPlaceholder = "回复："+reply.fromUserName;
+          },
+          hideReplyInput(){
+            this.showReplyId = "";
+            this.showReplyPlaceholder = "";
+            this.initReplyUserForm();
+          },
+          initReplyUserForm(){
+            this.replyUserForm.toUserId = "";
+            this.replyUserForm.toUserName = "";
+            this.replyUserForm.toUserAvatar = "";
+            this.replyUserForm.replyContent = "";
+          },
+          initReplyArticleForm(){
+            this.replyArticleForm.replyContent = "";
+          },
+          appendReplyList(newReply){
+            let replyTarget = newReply['replyTarget'];
+            if(replyTarget == 1){//回复文章的评论
+              this.firstReplyList.push(newReply);
+            }else{//回复其他人的评论
+              let firstReplyId = newReply['toFirstReplyId'];
+              let firstReplyList = this.firstReplyList;
+              for(let i = 0; i < firstReplyList.length; i++){
+                let firstReply = firstReplyList[i];
+                if(firstReply['id'] == firstReplyId){
+                  firstReply.secondReplyList.push(newReply);
+                }
+              }
+            }
+          }
+        },
+        mounted() {
+          let the = this;
+          replyApi.findReplyListByArticleId(this.articleId).then(res => {
+            console.log("replyList = ",res.data)
+            the.firstReplyList = res.data;
+          })
         }
     }
 </script>
@@ -222,6 +319,12 @@
 
   .box-reply div.edit-mode {
     float: right;
+    width: 86%;
+    margin: 25px 25px 15px 0;
+  }
+
+  .box-reply div.edit-mode.replyUser {
+    float: left;
     width: 86%;
     margin: 25px 25px 15px 0;
   }

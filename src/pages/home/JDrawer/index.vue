@@ -2,10 +2,11 @@
   <el-drawer
     :visible.sync="isShowDrawer"
     :before-close="handlerBeforeCloseDrawer"
-    size="90%"
+    size="85%"
     :show-close="false"
     ref="articleDrawer"
     :with-header="false"
+    :append-to-body="true"
   >
     <el-form
       ref="articleForm"
@@ -29,8 +30,9 @@
         <el-button title="添加文章类型" icon="el-icon-circle-plus-outline" circle></el-button>
       </el-form-item>
     </el-form>
-    <mavon-editor style="height: 80%;max-height: 700px;"
+    <mavon-editor style="height: 80%;max-height: 650px;"
                   v-model="articleForm.content"
+                  ref="md"
                   @imgAdd="handleImgUpload"
                   @imgDel="handleImgDelete"
     >
@@ -51,6 +53,7 @@
 
     export default {
         name: "JDrawer",
+        inject : ['reload'],
         props : {
           /*isShowDrawer : {
             type : Boolean,
@@ -73,7 +76,8 @@
               type: [
                 {required: true, message: '请选择文章类型！', trigger: 'blur'}
               ]
-            }
+            },
+            uploadFiles : {}
           }
         },
         methods : {
@@ -109,8 +113,10 @@
                   console.log("",res)
                   if(res.status == "200"){
                     the.$message.success("保存成功");
+                    the.reload();
                     the.resetForm();
-                    the.$refs.articleDrawer.closeDrawer();
+                    the.$refs.articleDrawer.closeDrawer()
+
                   }else{
                     the.$message.error("保存失败！");
                   }
@@ -120,13 +126,24 @@
           },
           handleImgUpload(pos,file){
             let the = this;
-            fileApi.fileUpload(file,res => {
-              console.log(res);
-              //the.$refs.articleDrawer.$img2Url(pos,url);
+            let fileList = [];
+            fileList.push(file);
+            fileApi.fileUpload(fileList).then(res => {
+              let fileItemList = res.data;
+              for (let i = 0; i < fileItemList.length; i++){
+                let fileItem = fileItemList[i];
+                let fileItemUrl = fileItem.fileUrl;
+                the.$refs.md.$img2Url(pos, fileItemUrl);
+                the.uploadFiles[fileItemUrl] = fileItem;
+              }
             })
           },
-          handleImgDelete(){
-
+          handleImgDelete(pos){
+            let the = this;
+            let uploadFile = the.uploadFiles[pos[0]];
+            let fileIds = [];
+            fileIds.push(uploadFile['fileId']);
+            fileApi.deleteFiles(fileIds)
           },
           handleFindArticleTypeList(){
             articleTypeApi.findAll().then(res => {
