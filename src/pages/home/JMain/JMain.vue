@@ -1,7 +1,7 @@
 <template>
   <el-container class="j-main-container">
     <el-container style="height: 100%;width: 100%;display: block;">
-      <el-row v-for="(articleList,articleType) in articleMap" class="j-row" :gutter="24" >
+      <el-row v-for="(articleList,articleType) in articleMap" :key="articleType" class="j-row" :gutter="24" >
         <el-col :span="24">
           <el-card shadow="hover">
             <div slot="header" class="clear-fix">

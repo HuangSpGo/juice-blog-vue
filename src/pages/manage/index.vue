@@ -13,7 +13,7 @@
     </el-aside>
     <el-main style="text-align: left">
       <el-breadcrumb separator-class="el-icon-arrow-right">
-        <el-breadcrumb-item v-for="item in breadcrumbList"></el-breadcrumb-item>
+        <el-breadcrumb-item v-for="(item,index) in breadcrumbList" :key="index"></el-breadcrumb-item>
       </el-breadcrumb>
       <router-view></router-view>
     </el-main>

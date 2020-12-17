@@ -71,13 +71,14 @@
                       </el-form>
                     </div>
                     <div class="reply-button" v-if="replyUserForm['replyId'] == firstReply['id']">
+                      <el-button class="reply-button" size="mini" type="primary" @click="handleReplyUser(firstReply)">确定</el-button>
                       <el-button class="reply-button" size="mini" @click="cancelHandleReplyUser()">取消</el-button>
                     </div>
 
 
                   </div>
                 </el-row>
-                <el-row v-for="secondReply in firstReply['secondReplyList']">
+                <el-row v-for="(secondReply,secondIndex) in firstReply['secondReplyList']" :key="secondReply.id">
                   <el-avatar
                     :src="handleAvatar(secondReply['fromUserAvatar'])"
                     fit="fill"
@@ -115,7 +116,7 @@
                       </el-form>
                     </div>
                     <div class="reply-button" v-if="replyUserForm['replyId'] == secondReply['id']">
-                      <el-button class="reply-button" size="mini" type="primary" @click="HandleReplyUser(secondReply)">确定</el-button>
+                      <el-button class="reply-button" size="mini" type="primary" @click="handleReplyUser(secondReply)">确定</el-button>
                       <el-button class="reply-button" size="mini" @click="cancelHandleReplyUser()">取消</el-button>
                     </div>
                   </div>
@@ -136,14 +137,13 @@
         props:{
           articleId : ""
         },
-        inject : ['openLoginDialog'],
+        // inject : ['openLoginDialog'],
         data:function () {
           return {
             avatar: this.$store.getters.getUserAvatar,
             replyArticleForm : {
               fromUserName : "",
               fromUserId :  "",
-              fromUserName : "",
               fromUserAvatar : this.$store.getters.getUserAvatar,
               articleId : this.articleId,
               replyContent : "",
@@ -162,80 +162,17 @@
               replyTarget : 2,
               toFirstReplyId : "",
             },
-            firstReplyList : [
-              /*{
-                id : "1",
-                fromUserName : "Juice",//评论者
-                fromUserAvatar : "https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png",
-                toUserName : "",//被评论者
-                replyTime : "5分钟前",//评论时间
-                articleId : "",//回复的文章id
-                replyContent : "写得真棒哈哈哈哈哈",//回复内容
-                secondReplyList : [
-                  {
-                    id : "2",
-                    fromUserName : "Coco",//评论者
-                    fromUserAvatar : "https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png",
-                    toUserName : "Juice",//被评论者
-                    replyTime : "4分钟前",//评论时间
-                    articleId : "",//回复的文章id
-                    replyContent : "谢谢！！！！",//回复内容
-                  },
-                  {
-                    id : "3",
-                    fromUserName : "Juice",//评论者
-                    fromUserAvatar : "https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png",
-                    toUserName : "Coco",//被评论者
-                    replyTime : "3分钟前",//评论时间
-                    articleId : "",//回复的文章id
-                    replyContent : "不用客气",//回复内容
-                  }
-                ]
-              },
-              {
-                id : "4",
-                fromUserName : "Juice",//评论者
-                fromUserAvatar : "https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png",
-                toUserName : "",//被评论者
-                replyTime : "5分钟前",//评论时间
-                articleId : "",//回复的文章id
-                replyContent : "写得真棒哈哈哈哈哈",//回复内容
-                secondReplyList : [
-                  {
-                    id : "5",
-                    fromUserName : "Coco",//评论者
-                    fromUserAvatar : "https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png",
-                    toUserName : "Juice",//被评论者
-                    replyTime : "4分钟前",//评论时间
-                    articleId : "",//回复的文章id
-                    replyContent : "谢谢！！！！",//回复内容
-                  },
-                  {
-                    id : "6",
-                    fromUserName : "Juice",//评论者
-                    fromUserAvatar : "https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png",
-                    toUserName : "Coco",//被评论者
-                    replyTime : "3分钟前",//评论时间
-                    articleId : "",//回复的文章id
-                    replyContent : "不用客气",//回复内容
-                  }
-                ]
-              }*/
-            ]
+            firstReplyList : []
           }
         },
+        mounted() {
+          let the = this;
+          replyApi.loadByArticleId(this.articleId).then(res => {
+            console.log("replyList = ",res.data['replyList'])
+            the.firstReplyList = res.data['replyList'];
+          })
+        },
         methods : {
-          isReplySelf(fromUserId) {
-            if(!this.$store.getters.isLogin){
-              return true;
-            }
-            let userId = this.$store.getters.getUser['id'];
-            if (userId != fromUserId) {
-              return true;
-            } else {
-              return false;
-            }
-          },
           beforeReplyCheck(newReply){
             if(!this.$store.getters.isLogin){
               this.openLoginDialog();
@@ -279,63 +216,24 @@
               this.$message.error("无法回复自己！")
               return;
             }
-            const firstReplyRef = this.$refs.firstReplyRef;
-            const param = JSON.stringify(this.replyArticleForm);
-            replyApi.save(param).then(res => {
-              if(res.status == 200){
-                this.$msgbox("评论成功");
-                this.firstReplyList.push(res.data);
-                this.replyArticleForm.replyContent = "";
-                this.$nextTick(() =>{
-                  setTimeout(() => {
-                    firstReplyRef.scroll
-                    Top  =firstReplyRef.scrollHeight
-                  }, 13)
-
-                })
-              }else{
-                this.$msgbox("评论失败","系统异常","error");
-              }
-
-            })
-            newReply.toUserId = oldReply.fromUserId;
-            newReply.toUserName = oldReply.fromUserName;
-            newReply.toUserAvatar = oldReply.fromUserAvatar;
-            newReply.fromUserName = this.$store.getters.getUser['userName'];
-            newReply.articleId = this.articleId;
-            if(oldReply['replyTarget'] == 1){
-              newReply.toFirstReplyId = oldReply.id;
-            }else{
-              newReply.toFirstReplyId = oldReply.toFirstReplyId;
-            }
             this.handleReply(newReply);
           },
           /**
            * 打开回复评论
            */
           handleOpenReplyUser(oldReply){
-            console.log(oldReply);
             this.replyUserForm['replyId'] = oldReply.id;
-            // replyApi.save().then(res => {
-            //
-            // })
+            this.replyUserForm.toUserId = oldReply.fromUserId;
+            this.replyUserForm.toUserName = oldReply.fromUserName;
+            this.replyUserForm.toUserAvatar = oldReply.fromUserAvatar;
+            this.replyUserForm.toFirstReplyId = oldReply.toFirstReplyId;
           },
           cancelHandleReplyUser(){
             this.replyUserForm['replyId'] = undefined;
             this.replyUserForm['replyContent'] = "";
           },
-          HandleReplyUser(oldReply){
-            // fromUserName : "",
-            //   fromUserAvatar : this.$store.getters.getUserAvatar,
-            //   articleId : this.articleId,
-            //   toUserName : "",
-            //   replyContent : "",
-            this.replyUserForm
           handleReply(newReply){
             let the = this;
-            newReply.fromUserName = this.$store.getters.getUser['userName'];
-            newReply.fromUserId = this.$store.getters.getUser['id'];
-            newReply.fromUserAvatar = this.$store.getters.getUser['avatarUrl'];
             replyApi.save(newReply).then(res => {
               let newReply = res.data;
               if(newReply['replyTarget'] == 1){
@@ -351,16 +249,7 @@
           handlePreview(){
 
           },
-          /**
-           * 显示回复输入框
-           */
-          showReplyInput(reply){
-            this.showReplyId = reply.id;
-            this.showReplyPlaceholder = "回复："+reply.fromUserName;
-          },
           hideReplyInput(){
-            this.showReplyId = "";
-            this.showReplyPlaceholder = "";
             this.initReplyUserForm();
           },
           initReplyUserForm(){
@@ -368,6 +257,7 @@
             this.replyUserForm.toUserName = "";
             this.replyUserForm.toUserAvatar = "";
             this.replyUserForm.replyContent = "";
+            this.replyUserForm.toFirstReplyId = "";
           },
           initReplyArticleForm(){
             this.replyArticleForm.replyContent = "";
@@ -387,13 +277,6 @@
               }
             }
           }
-        },
-        mounted() {
-          let the = this;
-          replyApi.loadByArticleId(this.articleId).then(res => {
-            console.log("replyList = ",res.data)
-            the.firstReplyList = res.data;
-          })
         }
     }
 </script>

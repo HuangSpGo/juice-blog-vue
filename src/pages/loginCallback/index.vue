@@ -28,6 +28,11 @@
         methods:{
           login(code,type){
             this.loading = true;
+            if(type == 'github' && !code){
+              alert("登录失败，跳转回首页");
+              this.$router.push("/");
+              return;
+            }
             loginApi.login(type, code).then(res => {
               if(res.status == "200"){
                 const token = res.data;
