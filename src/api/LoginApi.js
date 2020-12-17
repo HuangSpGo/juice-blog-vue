@@ -1,6 +1,6 @@
-import axios from 'axios'
+import {baseApiUrl,$ajax} from './BaseApi';
 
-const baseUrl = window.baseParam.baseApiUrl + "login";
+const baseUrl = baseApiUrl + "login";
 const loginApi = {
   login(type,code){
     let url = baseUrl + "/oauth";
@@ -8,7 +8,7 @@ const loginApi = {
       type : type,
       code: code
     }
-    return axios.post(url,param,{})
+    return $ajax.post(url,param,{})
   }
 }
 export {

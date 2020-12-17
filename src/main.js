@@ -2,9 +2,14 @@
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
 import App from './App'
+
+//引入jsCookie
+import Cookie from 'js-cookie';
+Vue.use(Cookie);
 //引入store
 import store from './store/index'
 import router from './router'
+
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import 'gitalk/dist/gitalk.css'
@@ -16,6 +21,8 @@ import emoji from 'markdown-it-emoji'
 import 'mavon-editor/dist/css/index.css'
 import {userApi} from "./api/UserApi";
 
+import qs from 'qs';
+Vue.prototype.$qs = qs
 
 
 Vue.config.productionTip = false

@@ -1,6 +1,6 @@
-import axios from 'axios'
+import {baseApiUrl,$ajax} from './BaseApi';
 
-const baseUrl = window.baseParam.baseApiUrl + "/file";
+const baseUrl = baseApiUrl + "/file";
 const fileApi = {
 
   /**
@@ -15,7 +15,7 @@ const fileApi = {
         'Content-Type' : 'multipart/form-data'
       }
     };
-    axios.post(url,formData,config).then(res => {
+    $ajax.post(url,formData,config).then(res => {
       callback(res);
     })
   },

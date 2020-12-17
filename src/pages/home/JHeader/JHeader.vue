@@ -100,8 +100,9 @@
           },
           handleLogout(){
             this.$confirm("是否确定退出？").then(() =>{
-              this.$store.commit('setToken', null);
-              this.$store.commit('setUser', null);
+              this.$store.commit('removeToken');
+              this.$store.commit('removeUser');
+              this.$router.go(0);
             })
           }
         },

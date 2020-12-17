@@ -1,13 +1,10 @@
-import axios from 'axios'
+import {baseApiUrl,$ajax} from './BaseApi';
 
-const baseUrl = window.baseParam.baseApiUrl + "user";
+const baseUrl = baseApiUrl + "user";
 const userApi = {
-  getUserInfo(token){
+  getUserInfo(){
     let url = baseUrl + "/getUserInfo";
-    return axios.get(url,{
-      headers : {
-        Authorization : token
-      }
+    return $ajax.get(url,{
     });
   }
 }

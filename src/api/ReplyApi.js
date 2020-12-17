@@ -1,19 +1,21 @@
-import axios from 'axios'
+import {baseApiUrl,$ajax,qs} from './BaseApi';
 
-const baseUrl = window.baseParam.baseApiUrl + "/reply";
+const baseUrl = baseApiUrl + "/reply";
 const replyApi = {
   save(param){
     let url = baseUrl + "/save";
-    return axios.post(url,param,{
+
+    return $ajax.post(url,param,{
       headers : {
-        "Content-Type" : "application/json"
+        'Content-Type': 'application/json;charset=UTF-8'
       }
     })
   },
   loadByArticleId(articleId){
     let url = baseUrl + "/findReplyListByArticleId/" + articleId;
-    return axios.get(url,{});
+    return $ajax.get(url,{});
   }
+
 }
 export {
   replyApi

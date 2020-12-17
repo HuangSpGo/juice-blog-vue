@@ -44,13 +44,13 @@
           },
           findAllType(){
             articleTypeApi.findAll().then(res => {
-              this.articleTypeList = res.data;
+              this.articleTypeList = res.data['typeList'];
               this.findArticleList();
             })
           },
           findArticleList(){
             articleApi.findAllArticleGroupByType().then(res => {
-              this.articleMap = res.data;
+              this.articleMap = res.data['articleMap'];
             });
           },
           getArticleType(typeId){

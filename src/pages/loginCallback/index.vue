@@ -40,8 +40,8 @@
               }
             })
           },
-          setUserInfo(token){
-            userApi.getUserInfo(token).then(res => {
+          setUserInfo(){
+            userApi.getUserInfo().then(res => {
               if(res.data){
                 this.$store.commit("setUser",res.data);
               }else{
