@@ -21,8 +21,7 @@ axios.interceptors.response.use((res => {
       || result.code == 403
       || result.code == 500
       || result.code == 501){
-      this.$msgbox.showError(result.msg);
-      this.$router.push("/");
+      alert(result.msg);
     }
     res.data = result.data;
     return res;

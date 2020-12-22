@@ -19,7 +19,7 @@
         style="min-height: 600px"
       >
       </mavon-editor>
-<!--    <j-reply></j-reply>-->
+    <j-reply :article-id="article.id"></j-reply>
   </div>
 
 </template>
@@ -34,6 +34,7 @@
         data(){
           return {
             article : {
+              id:"",
               content : ""
             }
           }

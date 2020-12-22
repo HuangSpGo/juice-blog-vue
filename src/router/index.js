@@ -30,6 +30,7 @@ const router = new Router({
         {
           path : "/main",
           name : "JMain",
+          visible: true,
           title : "首页",
           component : JMain
         },
@@ -37,6 +38,7 @@ const router = new Router({
           path : "manage",
           name : "Manage",
           meta : "管理",
+          visible: true,
           title : "管理",
           component : Manage,
           isAdmin : store.getters.isAdmin,
@@ -61,19 +63,24 @@ const router = new Router({
           path : "/about",
           name : "about",
           title : "关于",
+          visible: true,
           component : About
         },
         {
           path : "/post/:id",
           name : "post",
+          visible: false,
           component : Article
+        },
+        {
+          path: "/loginCallback",
+          name : "loginCallback",
+          visible: false,
+          component: LoginCallback
         }
       ]
     },
-    {
-      path: "/loginCallback",
-      component: LoginCallback
-    }
+
   ]
 })
 

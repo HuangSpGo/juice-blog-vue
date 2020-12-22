@@ -27,7 +27,7 @@
               <j-search></j-search>
             </li>-->
       <li v-for="(item,index) in routes"  class="j-li">
-        <a href="javascript:void(0);" :class="{active : $store.state.activePath == item.path }" :key="index" @click="handleClick(item)">{{item.title}}</a>
+        <a v-if="item.name != 'Manage' & item.visible == true" href="javascript:void(0);" :class="{active : $store.state.activePath == item.path }" :key="index" @click="handleClick(item)">{{item.title}}</a>
       </li>
       <li class="j-li" v-if="$store.getters.isAdmin" >
         <el-button type="primary" @click="handleOpenDrawer" icon="el-icon-edit" style="margin:4px;"></el-button>
@@ -35,13 +35,14 @@
     </ul>
     <j-drawer ref="drawer"></j-drawer>
     <el-dialog
-      :visible.sync="loginDialogVisible"
+      :visible.sync="$store.getters.loginDialogVisible"
       :modal="false"
+      :before-close="closeLoginDialog"
       width="300px"
     >
       <span>当前仅支持Github登录，是否授权登录？</span>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="loginDialogVisible = false">取 消</el-button>
+        <el-button @click="closeLoginDialog">取 消</el-button>
         <el-button type="primary" @click="handleLogin">确 定</el-button>
       </span>
     </el-dialog>
@@ -60,7 +61,7 @@
     data:function () {
       return {
         routes: this.$router.options.routes[0].children,
-        loginDialogVisible : false,
+        loginDialogVisible : this.$store.getters.loginDialogVisible
       }
     },
     computed:{
@@ -82,8 +83,11 @@
       },
       openLoginDialog(){
         if(!this.$store.getters.isLogin){
-          this.loginDialogVisible = true;
+          this.$store.commit("setLoginDialogVisible",true);
         }
+      },
+      closeLoginDialog(){
+        this.$store.commit('setLoginDialogVisible',false);
       },
       /**
        * 登录

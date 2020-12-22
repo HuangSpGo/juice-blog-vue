@@ -8,10 +8,14 @@ Vue.use(Vuex);
 const state = {
   activePath:"",
   userInfo:null,
-  token:null
+  token:null,
+  loginDialogVisible:false
 }
 
 const getters = {
+  loginDialogVisible:(state) => {
+    return state.loginDialogVisible;
+  },
   getToken :(state) => {
     if(!state.token){
       state.token = Cookie.get("token");
@@ -38,6 +42,9 @@ const getters = {
 }
 
 const mutations = {
+  setLoginDialogVisible : (state,loginDialogVisible) => {
+    state.loginDialogVisible = loginDialogVisible
+  },
   setToken : (state,token) => {
     Cookie.set("token",token);
     state.token = token
@@ -58,6 +65,9 @@ const mutations = {
 }
 
 const actions = {
+  setLoginDialogVisible (context,loginDialogVisible){
+    context.commit('setLoginDialogVisible',loginDialogVisible)
+  },
   setToken (context,token) {
     context.commit('setToken',token)
   },

@@ -13,7 +13,7 @@
           </el-card>
         </el-col>
       </el-row>
-      <el-divider></el-divider>
+<!--      <el-divider></el-divider>-->
       <j-reply :article-id="homePage"></j-reply>
     </el-container>
   </el-container>
